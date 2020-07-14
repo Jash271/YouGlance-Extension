@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 datasets: [
                     {
                         label: "Sentiment-count",
-                        backgroundColor: ["red","#00ff00","blue"],
+                        backgroundColor: ["#e3430e","#48f542","#0ed1e3"],
                         data: value
                     }
                 ]
