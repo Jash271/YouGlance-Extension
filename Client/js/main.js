@@ -36,9 +36,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const getEntities = async (id) => {
+       try{
         const res = await fetch(`${baseLocalURL}/get_unique_entities/${id}`)
         const data = await res.json();
+        console.log(data)
         return data
+       }
+       catch(err){
+           console.log(err)
+           entityOutput.innerHTML=`<h3 class="text-center">Sorry ,We are unable to fetch insights of this video</h3>
+           <h3 class="text-center">Try another video</h3>`
+       }
     }
 
     const getGraphData = async(id)=>{
