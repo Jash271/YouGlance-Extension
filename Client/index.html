@@ -19,13 +19,14 @@
             YouGlance
         </div>
         </nav>
-        <h6 class="text-center text-dark mt-3">Enter any question or keyword</h6>
+        <h6 class="text-center text-dark mt-3">Enter any keyword or click the suggested Entity</h6>
         <div class="form mt-2">
             <form>
                 <div class="form-group">
-                    <input type="text" name="question" id="question" placeholder="Question..." class="form-control">
+                    <input type="text" name="question" id="keyword" placeholder="Question..." class="form-control">
                 </div>
-                <button class="btn btn-dark" id="btn1">Submit</button>
+                <button class="btn btn-dark" id="btn1" disabled>Submit</button>
+                <button class="btn btn-dark ml-2" id="btn2" >Show Graph</button>
             </form>
         </div>
         </div>
@@ -33,8 +34,17 @@
             <div class="output mt-2" id="EntityOutput"></div>
             <div class="output mt-2" id="TableOutput"></div>
         </div>
-    
+        <div id="graph-output">
+            <!-- <button id ="btn3" class="btn btn-dark">Go Back</button>
+            <h2 class="text-center" id="loadingHeader">Loading...</h2> -->
+            <canvas id="bar-chart" width="350" height="300"></canvas>
+            <canvas id="donut-chart" width="350" height="300"></canvas>
+        </div>
+    </div>
+    <script src="./js/chart.js"></script>
     <script src="./js/main.js"></script>
+    
+
 
 </body>
 </html>

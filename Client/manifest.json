@@ -2,6 +2,7 @@
     "name": "YouGlance",
     "version": "1.0",
     "description": "Keyword Search ",
+    "minimum_chrome_version": "23",
     "manifest_version": 2,
     "browser_action": {
         "default_icon": "icon.png",
