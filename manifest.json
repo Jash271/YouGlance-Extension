@@ -1,0 +1,9 @@
+{
+    "name": "YouGlance",
+    "description": "Youtube video keywood search and sentiment analysis",
+    "version":"1",
+    "browser_action":{
+        "default_popup":"index.html"
+    },
+    "permission":["activeTab"]
+}
