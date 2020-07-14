@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // DOM Elements
     const GlobalOutput = document.getElementById("output");
+    const home = document.getElementById("home")
     const entityOutput = document.getElementById("EntityOutput");
     const tableOutput = document.getElementById("TableOutput");
     const inputElement = document.getElementById("keyword");
@@ -16,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const btn = document.getElementById("btn1");
     const showGraph = document.getElementById("btn2");
     const goBack = document.getElementById("btn3");
+    const loadingHeader = document.getElementById("loadingHeader")
+    const graphDiv = document.getElementById("graphs")
     // Regex
     let regexReplace = /(<|>)/gi
     let regexSplit = /(v=| vi\/ | \/v\/ | youtu\.be\/ | \/embed\/)/
@@ -111,6 +114,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const plotBarGraph = (key,value) => {
+        loadingHeader.style.display="none";
+        graphDiv.style.display="block"
         var ctx = document.getElementById("bar-chart").getContext('2d');
         let chart = new Chart(ctx, {
             type: 'bar',
@@ -135,6 +140,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const plotDonutGraph = (key,value) => {
+        loadingHeader.style.display="none";
+        graphDiv.style.display="block"
         const ctx = document.getElementById("donut-chart").getContext("2d")
         let chart = new Chart(ctx, {
             type: 'doughnut',
@@ -143,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 datasets: [
                     {
                         label: "Sentiment-count",
-                        backgroundColor: ["red","#00ff00","#00ccff"],
+                        backgroundColor: ["red","#00ff00","blue"],
                         data: value
                     }
                 ]
@@ -173,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("fetch")
             if (unique_ents) {
                 btn.disabled = false
+                showGraph.disabled = false
                 let div = document.createElement("div")
                 div.setAttribute("class", "row")
                 div.innerHTML = ""
@@ -208,17 +216,13 @@ document.addEventListener("DOMContentLoaded", () => {
             })
 
             showGraph.addEventListener("click",async (e) => {
+                home.style.display="none";
+                graphOutput.style.display="block";
+                graphDiv.style.display="none";
+                loadingHeader.style.display="block";
+
                 e.preventDefault();
-                // {
-                //     "Negative": 12,
-                //     "Positive": 57,
-                //     "Neutral": 160,
-                //     "label_stats": {
-                //       "PERSON": 4,
-                //       "ORG": 14,
-                //       "GPE": 2
-                //     }
-                //   }
+            
                 const graphData = await getGraphData(id);
                 let sentimentKeyArray=[]
                 let sentimentValueArray=[]
@@ -240,6 +244,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 plotDonutGraph(sentimentKeyArray,sentimentValueArray);
                 plotBarGraph(countKeyArray,countValueArray);
+            })
+
+            goBack.addEventListener("click",(e)=>{
+                e.preventDefault();
+                graphOutput.style.display="none";
+                home.style.display="block";
+                loadingHeader.style.display="none";
             })
 
         }
