@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const getEntities = async (id) => {
        try{
-        const res = await fetch(`${baseLocalURL}/get_unique_entities/${id}`)
+        const res = await fetch(`${baseCloudURL}/get_unique_entities/${id}`)
         const data = await res.json();
         console.log(data)
         return data
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const getGraphData = async(id)=>{
         try{
-        const res  = await fetch(`${baseLocalURL}/sentiment/${id}`)
+        const res  = await fetch(`${baseCloudURL}/sentiment/${id}`)
         const data = await res.json()
         return data
         }
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const getResponseFromKeyword = async (id, keyWord, tab) => {
-        const res = await fetch(`${baseLocalURL}/wild_card/${id}/${keyWord}`)
+        const res = await fetch(`${baseCloudURL}/wild_card/${id}/${keyWord}`)
         const data = await res.json();
         displayTableData(data, tab)
     }
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        const res = await fetch(`${baseLocalURL}/search_by_ents`, options);
+        const res = await fetch(`${baseCloudURL}/search_by_ents`, options);
         const data = await res.json();
         displayTableData(data, tab)
     }
