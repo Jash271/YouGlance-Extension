@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const getEntities = async (id) => {
        try{
-        const res = await fetch(`${baseCloudURL}/get_unique_entities/${id}`)
+        const res = await fetch(`${baseLocalURL}/get_unique_entities/${id}`)
         const data = await res.json();
         console.log(data)
         return data
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const getGraphData = async(id)=>{
         try{
-        const res  = await fetch(`${baseCloudURL}/sentiment/${id}`)
+        const res  = await fetch(`${baseLocalURL}/sentiment/${id}`)
         const data = await res.json()
         return data
         }
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ul.className = "list-group"
         if (data.length == 0) {
             tableOutput.innerHTML = `
-            <span class="text-primary font-weight-bold f-3 text-center">No match found..<br>Try something related to video!!!</br></span>
+            <span class="text-dark font-weight-bold f-3 text-center">No match found..<br>Try something related to video!!!</br></span>
             `
         }
         data.forEach(ele => {
@@ -97,14 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
         tableOutput.appendChild(ul)
     }
 
-    const getResponseFromKeyword = async (id, keyWord, tab) => {
-        const res = await fetch(`${baseCloudURL}/wild_card/${id}/${keyWord}`)
+    const getResponseByKeywordSubmit = async (id, keyWord, tab) => {
+        const res = await fetch(`${baseLocalURL}/wild_card/${id}/${keyWord}`)
         const data = await res.json();
         displayTableData(data, tab)
     }
 
-    const getResponseBySubmit = async (id, input, tab) => {
-        const query = input.split(" ");
+    const getResponseByEntity = async (id, query, tab) => {
+        
         const dataObject = {
             video_id: id, query: query
         }
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        const res = await fetch(`${baseCloudURL}/search_by_ents`, options);
+        const res = await fetch(`${baseLocalURL}/search_by_ents`, options);
         const data = await res.json();
         displayTableData(data, tab)
     }
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 labels: key,
                 datasets: [
                     {
-                        label: "Count(Frequency)",
+                        label: "Entity-Frequncy",
                         backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
                         data: value
                     }
@@ -141,8 +141,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 legend: { display: false },
                 title: {
                     display: true,
+                    fontStyle : 'bold',
+                    fontSize : '18',
                     text: 'Count of Words/Entities'
                 }
+                
             }
         });
     }
@@ -166,7 +169,16 @@ document.addEventListener("DOMContentLoaded", () => {
             options: {
                 title: {
                     display: true,
+                    fontStyle : 'bold',
+                    fontSize : '18',
                     text: 'Sentiment Analysis Of Video'
+                },
+                legend:{
+                    
+                    labels :{
+                        fontStyle:'bold',
+                        fontColor:'black'
+                    }
                 }
             }
         });
@@ -185,26 +197,39 @@ document.addEventListener("DOMContentLoaded", () => {
             <h4>loading ... </h4>
             `
             const { unique_ents } = await getEntities(id);
-            console.log("fetch")
             if (unique_ents) {
                 btn.disabled = false
                 showGraph.disabled = false
                 let div = document.createElement("div")
-                div.setAttribute("class", "row")
+                div.setAttribute("class", "row ml-2")
                 div.innerHTML = ""
                 for (var i = 0; i < 10; i++) {
                     if (unique_ents[i] == undefined) break;
-                    const col = document.createElement("div");
-                    col.setAttribute("class", "mx-3")
-                    col.innerHTML = `<h4><kbd>${unique_ents[i]}</kbd></h4>`;
-                    // OnClick Listerner
-                    col.addEventListener("click", (e) => {
-                        getResponseFromKeyword(id, e.target.innerHTML, tabs[0])
-                        tableOutput.innerHTML = `<h2 class="text-center">Loading...</h2>`
-                    })
+                    const col = document.createElement("radio");
+                    col.innerHTML = `<label ><input type="checkbox" id=${i} name="radio" value="${unique_ents[i]}"><span style="padding:10px; margin:10;font-size:18px">${unique_ents[i]}</span></label>`
                     div.appendChild(col)
                 }
-
+                const submitSelectedEntityButton = document.createElement("button");
+                submitSelectedEntityButton.setAttribute("class","btn btn-dark");
+                submitSelectedEntityButton.innerHTML="GetResult";
+                submitSelectedEntityButton.addEventListener("click",(e)=>{
+                    let entityArray = [];
+                    e.preventDefault();
+                    const selectedEntities = document.querySelectorAll("input[name='radio']:checked");
+                    if(selectedEntities.length>0){
+                        selectedEntities.forEach(ele=>{
+                            entityArray.push(ele.value)
+                        });
+                        // Display loading Message;
+                        tableOutput.innerHTML = `<h2 class="text-center">Loading...</h2>`
+                        getResponseByEntity(id,entityArray,tabs[0])
+                    }
+                    else{
+                        tableOutput.innerHTML = `<span class="text-danger font-weight-bold f-2">Please select atleast one entity...</span>`
+                    }
+                
+                })
+                div.appendChild(submitSelectedEntityButton)
                 entityOutput.innerHTML = ''
                 entityOutput.appendChild(div)
             }
@@ -219,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 else {
                     tableOutput.innerHTML = `<h2 class="text-center">Loading...</h2>`
-                    getResponseBySubmit(id, inputValue, tabs[0])
+                    getResponseByKeywordSubmit(id, inputValue, tabs[0])
                 }
             })
 
